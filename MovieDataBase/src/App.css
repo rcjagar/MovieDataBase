@@ -1,0 +1,17 @@
+.container {
+  margin: 0 auto;
+  max-width: 1000px;
+  padding: 40px;
+}
+
+.title {
+  font-size: 4.4rem;
+}
+
+@media (max-width: 786px) {
+  .title {
+    font-size: 2rem;
+    margin-left: 3rem;
+  }
+}
+
