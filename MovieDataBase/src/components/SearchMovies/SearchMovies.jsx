@@ -1,13 +1,44 @@
-import React from 'react';
-import { useMovieSearch } from '../../hooks/useMovieSearch';
+import React, { useState } from 'react';
 import './SearchMovies.css'
 
 function SearchMovies() {
-    const { query, setQuery, movies, isLoading, error, searchMovies } = useMovieSearch();
+    const [query, setQuery] = useState("");
+    const [movies, setMovies] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const handleSearch = async (e) => {
         e.preventDefault();
-        await searchMovies(query);
+        
+        if (!query.trim()) {
+            setMovies([]);
+            return;
+        }
+
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const apiKey = import.meta.env.VITE_TMDB_API_KEY;
+            if (!apiKey) {
+                throw new Error('API key not found');
+            }
+
+            const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}`;
+            const res = await fetch(url);
+
+            if (!res.ok) {
+                throw new Error(`API error: ${res.status}`);
+            }
+
+            const data = await res.json();
+            setMovies(data.results || []);
+        } catch (err) {
+            setError(err.message);
+            console.error('Error searching movies:', err);
+        } finally {
+            setIsLoading(false);
+        }
     }
 
   return (
