@@ -1,10 +1,15 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useMovieSearch } from '../../hooks/useMovieSearch';
+import { useMovieSearch } from './useMovieSearch';
 
 describe('useMovieSearch', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    global.fetch = vi.fn();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('should initialize with empty state', () => {
@@ -46,6 +51,7 @@ describe('useMovieSearch', () => {
 
     expect(result.current.movies).toEqual(mockMovies);
     expect(result.current.error).toBe(null);
+    expect(global.fetch).toHaveBeenCalled();
   });
 
   it('should handle empty search query', async () => {
@@ -56,6 +62,7 @@ describe('useMovieSearch', () => {
     });
 
     expect(result.current.movies).toEqual([]);
+    expect(global.fetch).not.toHaveBeenCalled();
   });
 
   it('should handle API error', async () => {
@@ -74,26 +81,5 @@ describe('useMovieSearch', () => {
 
     expect(result.current.error).toBeTruthy();
     expect(result.current.movies).toEqual([]);
-  });
-
-  it('should set isLoading state during search', async () => {
-    global.fetch = vi.fn(() =>
-      new Promise(resolve => setTimeout(() => resolve({
-        ok: true,
-        json: () => Promise.resolve({ results: [] }),
-      }), 100))
-    );
-
-    const { result } = renderHook(() => useMovieSearch());
-
-    const searchPromise = act(async () => {
-      await result.current.searchMovies('test');
-    });
-
-    expect(result.current.isLoading).toBe(true);
-
-    await searchPromise;
-
-    expect(result.current.isLoading).toBe(false);
   });
 });

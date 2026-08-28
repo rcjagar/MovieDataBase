@@ -16,7 +16,7 @@ export const useMovieSearch = () => {
     setError(null);
 
     try {
-      const apiKey = import.meta.env.VITE_TMDB_API_KEY;
+      const apiKey = import.meta.env?.VITE_TMDB_API_KEY;
       if (!apiKey) {
         throw new Error('API key not found. Please add VITE_TMDB_API_KEY to .env.local');
       }

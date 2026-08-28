@@ -1,11 +1,5 @@
 import '@testing-library/jest-dom';
-import { afterEach, vi } from 'vitest';
 import { cleanup } from '@testing-library/react';
 
-// Cleanup after each test
-afterEach(() => {
-  cleanup();
-});
-
-// Mock global fetch if needed
-global.fetch = vi.fn();
+// Cleanup is handled by testing-library
+// This file imports jest-dom matchers for use in tests
