@@ -1,6 +1,6 @@
 # this is awsome project on movie data base 
 
-
+## you can fetch all movie details here
 
 # React + Vite
 
